@@ -1,10 +1,7 @@
-const API_BASE_URL = '/api/v1';
+const API_BASE_URL = '/api/v1'
 
-async function request<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint}`;
+async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  const url = `${API_BASE_URL}${endpoint}`
 
   const response = await fetch(url, {
     ...options,
@@ -12,14 +9,14 @@ async function request<T>(
       'Content-Type': 'application/json',
       ...options.headers,
     },
-  });
+  })
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || `Request failed: ${response.status}`);
+    const error = await response.json().catch(() => ({}))
+    throw new Error(error.message || `Request failed: ${response.status}`)
   }
 
-  return response.json();
+  return response.json()
 }
 
 export const api = {
@@ -37,6 +34,5 @@ export const api = {
       body: JSON.stringify(body),
     }),
 
-  delete: <T>(endpoint: string) =>
-    request<T>(endpoint, { method: 'DELETE' }),
-};
+  delete: <T>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' }),
+}
