@@ -5,7 +5,18 @@
  * import { personApi, queryKeys, ApiError } from '@/api'
  */
 
-export { api, personApi, accountApi, marriageApi, limitsApi, queryKeys, ApiError } from './client'
+export {
+  api,
+  personApi,
+  accountApi,
+  marriageApi,
+  limitsApi,
+  employerApi,
+  employmentApi,
+  employmentIncomeApi,
+  queryKeys,
+  ApiError,
+} from './client'
 
 export type { PaginationParams } from './client'
 
@@ -25,4 +36,15 @@ export type {
   ApiAccountTypeLimits,
   ApiContributionLimit,
   ApiPhaseOutRange,
+  ApiEmployer,
+  ApiPageEmployer,
+  ApiCreateEmployerRequest,
+  ApiUpdateEmployerRequest,
+  ApiEmployment,
+  ApiEmploymentType,
+  ApiCreateEmploymentRequest,
+  ApiUpdateEmploymentRequest,
+  ApiEmploymentIncome,
+  ApiCreateEmploymentIncomeRequest,
+  ApiUpdateEmploymentIncomeRequest,
 } from './schema'
