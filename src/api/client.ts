@@ -25,14 +25,16 @@ const API_BASE_URL = '/api/v1'
  * API Error class for structured error handling
  */
 export class ApiError extends Error {
-  constructor(
-    message: string,
-    public status: number,
-    public statusText: string,
-    public data?: unknown
-  ) {
+  status: number
+  statusText: string
+  data?: unknown
+
+  constructor(message: string, status: number, statusText: string, data?: unknown) {
     super(message)
     this.name = 'ApiError'
+    this.status = status
+    this.statusText = statusText
+    this.data = data
   }
 }
 

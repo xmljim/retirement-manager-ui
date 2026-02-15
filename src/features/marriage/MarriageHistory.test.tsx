@@ -110,7 +110,13 @@ describe('MarriageHistory', () => {
     })
 
     it('shows error message when marriage API fails', async () => {
-      mockPersonApi.getAll.mockResolvedValue([mockPerson])
+      mockPersonApi.getAll.mockResolvedValue({
+        content: [mockPerson],
+        totalElements: 1,
+        totalPages: 1,
+        size: 1,
+        number: 0,
+      })
       mockMarriageApi.getByPersonId.mockRejectedValue(new Error('Network error'))
 
       renderMarriageHistory()
@@ -123,7 +129,13 @@ describe('MarriageHistory', () => {
 
   describe('Empty state', () => {
     it('shows empty state when no marriages exist', async () => {
-      mockPersonApi.getAll.mockResolvedValue([mockPerson])
+      mockPersonApi.getAll.mockResolvedValue({
+        content: [mockPerson],
+        totalElements: 1,
+        totalPages: 1,
+        size: 1,
+        number: 0,
+      })
       mockMarriageApi.getByPersonId.mockResolvedValue([])
 
       renderMarriageHistory()
@@ -135,7 +147,13 @@ describe('MarriageHistory', () => {
     })
 
     it('shows message when no person profile exists', async () => {
-      mockPersonApi.getAll.mockResolvedValue([])
+      mockPersonApi.getAll.mockResolvedValue({
+        content: [],
+        totalElements: 0,
+        totalPages: 0,
+        size: 1,
+        number: 0,
+      })
 
       renderMarriageHistory()
 
@@ -147,7 +165,13 @@ describe('MarriageHistory', () => {
 
   describe('Marriage list display', () => {
     beforeEach(() => {
-      mockPersonApi.getAll.mockResolvedValue([mockPerson])
+      mockPersonApi.getAll.mockResolvedValue({
+        content: [mockPerson],
+        totalElements: 1,
+        totalPages: 1,
+        size: 1,
+        number: 0,
+      })
       mockMarriageApi.getByPersonId.mockResolvedValue(mockMarriages)
     })
 
@@ -230,7 +254,13 @@ describe('MarriageHistory', () => {
 
   describe('Add Marriage modal', () => {
     beforeEach(() => {
-      mockPersonApi.getAll.mockResolvedValue([mockPerson])
+      mockPersonApi.getAll.mockResolvedValue({
+        content: [mockPerson],
+        totalElements: 1,
+        totalPages: 1,
+        size: 1,
+        number: 0,
+      })
       mockMarriageApi.getByPersonId.mockResolvedValue([])
     })
 
@@ -264,7 +294,13 @@ describe('MarriageHistory', () => {
 
   describe('Accessibility', () => {
     beforeEach(() => {
-      mockPersonApi.getAll.mockResolvedValue([mockPerson])
+      mockPersonApi.getAll.mockResolvedValue({
+        content: [mockPerson],
+        totalElements: 1,
+        totalPages: 1,
+        size: 1,
+        number: 0,
+      })
       mockMarriageApi.getByPersonId.mockResolvedValue(mockMarriages)
     })
 

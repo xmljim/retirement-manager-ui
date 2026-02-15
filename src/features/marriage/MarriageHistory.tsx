@@ -217,10 +217,10 @@ export function MarriageHistory() {
     error: personsError,
   } = useQuery({
     queryKey: queryKeys.persons.all,
-    queryFn: personApi.getAll,
+    queryFn: () => personApi.getAll({ page: 0, size: 1 }),
   })
 
-  const person = persons?.[0]
+  const person = persons?.content?.[0]
 
   // Fetch marriages for the person
   const {
