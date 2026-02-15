@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PersonDetail - Wireframe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-display: 'Fraunces', serif;
+      --font-body: 'DM Sans', sans-serif;
+      --stone-50: #fafaf9; --stone-100: #f5f5f4; --stone-200: #e7e5e4;
+      --stone-300: #d6d3d1; --stone-500: #78716c; --stone-700: #44403c; --stone-900: #1c1917;
+      --teal-500: #14b8a6; --teal-600: #0d9488;
+      --emerald-500: #10b981; --amber-500: #f59e0b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-body); background: var(--stone-100); min-height: 100vh; }
+
+    .page { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
+    .header-content h1 { font-family: var(--font-display); font-size: 2rem; }
+    .header-meta { display: flex; gap: 16px; margin-top: 8px; color: var(--stone-500); font-size: 0.9rem; }
+    .btn-edit { padding: 10px 20px; background: white; border: 1px solid var(--stone-300); border-radius: 8px; font-weight: 500; cursor: pointer; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .card-title { font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+
+    .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--stone-100); }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: var(--stone-500); font-size: 0.9rem; }
+    .info-value { font-weight: 500; }
+
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
+    .badge-teal { background: rgba(20,184,166,0.1); color: var(--teal-600); }
+    .badge-amber { background: rgba(245,158,11,0.1); color: var(--amber-500); }
+
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .stat { text-align: center; padding: 16px; background: var(--stone-50); border-radius: 12px; }
+    .stat-value { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; color: var(--teal-600); }
+    .stat-label { font-size: 0.8rem; color: var(--stone-500); margin-top: 4px; }
+
+    .account-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--stone-50); border-radius: 12px; margin-bottom: 12px; }
+    .account-name { font-weight: 500; }
+    .account-type { font-size: 0.8rem; color: var(--stone-500); }
+    .account-balance { font-family: var(--font-display); font-weight: 600; color: var(--emerald-500); }
+
+    .full-width { grid-column: 1 / -1; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="header-content">
+        <h1>John Smith</h1>
+        <div class="header-meta">
+          <span>Age 52</span>
+          <span>California</span>
+          <span class="badge badge-teal">Catch-up Eligible</span>
+        </div>
+      </div>
+      <button class="btn-edit">Edit Profile</button>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2 class="card-title">Personal Information</h2>
+        <div class="info-row">
+          <span class="info-label">Date of Birth</span>
+          <span class="info-value">March 15, 1974</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Filing Status</span>
+          <span class="info-value">Married Filing Jointly</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">State</span>
+          <span class="info-value">California</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Catch-up Status</span>
+          <span class="info-value"><span class="badge badge-teal">50+ Eligible</span></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">2025 Contribution Room</h2>
+        <div class="stat-grid">
+          <div class="stat">
+            <div class="stat-value">$31K</div>
+            <div class="stat-label">401(k) Limit</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">$8K</div>
+            <div class="stat-label">IRA Limit</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">$4.3K</div>
+            <div class="stat-label">HSA Limit</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card full-width">
+        <h2 class="card-title">
+          Accounts
+          <button class="btn-edit" style="font-size: 0.8rem; padding: 6px 12px;">+ Add Account</button>
+        </h2>
+        <div class="account-item">
+          <div>
+            <div class="account-name">Traditional 401(k)</div>
+            <div class="account-type">Employer: Acme Corp</div>
+          </div>
+          <div class="account-balance">$245,000</div>
+        </div>
+        <div class="account-item">
+          <div>
+            <div class="account-name">Roth IRA</div>
+            <div class="account-type">Personal Account</div>
+          </div>
+          <div class="account-balance">$68,500</div>
+        </div>
+        <div class="account-item">
+          <div>
+            <div class="account-name">HSA</div>
+            <div class="account-type">High-Deductible Health Plan</div>
+          </div>
+          <div class="account-balance">$12,200</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

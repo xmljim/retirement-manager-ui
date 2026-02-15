@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PersonForm - Wireframe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-display: 'Fraunces', serif;
+      --font-body: 'DM Sans', sans-serif;
+      --stone-50: #fafaf9; --stone-100: #f5f5f4; --stone-200: #e7e5e4;
+      --stone-300: #d6d3d1; --stone-500: #78716c; --stone-700: #44403c; --stone-900: #1c1917;
+      --teal-500: #14b8a6; --teal-600: #0d9488; --teal-700: #0f766e;
+      --rose-500: #f43f5e;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-body); background: var(--stone-100); min-height: 100vh; }
+
+    .page { max-width: 600px; margin: 0 auto; padding: 48px 24px; }
+    .page-header { text-align: center; margin-bottom: 40px; }
+    .page-title { font-family: var(--font-display); font-size: 2rem; color: var(--stone-900); }
+    .page-subtitle { color: var(--stone-500); margin-top: 8px; }
+
+    .card { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    .label { display: block; font-weight: 500; font-size: 0.875rem; margin-bottom: 6px; color: var(--stone-700); }
+    .required { color: var(--rose-500); }
+    .input, .select { width: 100%; padding: 14px 16px; border: 1px solid var(--stone-300); border-radius: 10px; font-size: 1rem; font-family: var(--font-body); background: white; transition: all 0.2s; }
+    .input:focus, .select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3px rgba(20,184,166,0.15); }
+    .hint { font-size: 0.75rem; color: var(--stone-500); margin-top: 4px; }
+
+    .btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--stone-200); }
+    .btn { padding: 14px 28px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: var(--teal-600); color: white; }
+    .btn-primary:hover { background: var(--teal-700); transform: translateY(-1px); }
+    .btn-secondary { background: var(--stone-100); color: var(--stone-700); }
+
+    .progress { display: flex; gap: 8px; justify-content: center; margin-bottom: 32px; }
+    .progress-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--stone-300); }
+    .progress-dot.active { background: var(--teal-600); width: 32px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="progress">
+      <div class="progress-dot active"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+    </div>
+
+    <div class="page-header">
+      <h1 class="page-title">Create Your Profile</h1>
+      <p class="page-subtitle">Tell us about yourself to get started</p>
+    </div>
+
+    <div class="card">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="label">First Name <span class="required">*</span></label>
+          <input type="text" class="input" placeholder="John">
+        </div>
+        <div class="form-group">
+          <label class="label">Last Name <span class="required">*</span></label>
+          <input type="text" class="input" placeholder="Smith">
+        </div>
+        <div class="form-group">
+          <label class="label">Date of Birth <span class="required">*</span></label>
+          <input type="date" class="input">
+          <p class="hint">Used to calculate catch-up contribution eligibility</p>
+        </div>
+        <div class="form-group">
+          <label class="label">State of Residence <span class="required">*</span></label>
+          <select class="select">
+            <option value="">Select state...</option>
+            <option value="CA">California</option>
+            <option value="TX">Texas</option>
+            <option value="NY">New York</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="label">Tax Filing Status <span class="required">*</span></label>
+          <select class="select">
+            <option value="">Select filing status...</option>
+            <option value="SINGLE">Single</option>
+            <option value="MFJ">Married Filing Jointly</option>
+            <option value="MFS">Married Filing Separately</option>
+            <option value="HOH">Head of Household</option>
+          </select>
+          <p class="hint">Affects IRA contribution limits and phase-out ranges</p>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary">Cancel</button>
+        <button class="btn btn-primary">Continue</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

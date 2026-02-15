@@ -85,6 +85,20 @@ bd sync               # Sync with git
 
 Dev server proxies `/api` requests to `http://localhost:8080` (backend).
 
+## API Type Generation
+
+TypeScript types are generated from the backend OpenAPI spec:
+
+```bash
+# Generate types from running API
+npm run api:generate
+
+# Generate from local spec file
+npm run api:generate:file
+```
+
+Generated types are written to `src/api/schema.d.ts`. Regenerate whenever API contracts change.
+
 ## Related Repository
 
 Backend: https://github.com/xmljim/retirement-manager-api
