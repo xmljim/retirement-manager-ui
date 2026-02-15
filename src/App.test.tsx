@@ -21,7 +21,9 @@ vi.mock('./api/client', async () => {
       create: vi.fn(),
     },
     limitsApi: {
-      getByPersonId: vi.fn(),
+      getByYear: vi.fn(),
+      getByYearAndAccountType: vi.fn(),
+      getAvailableYears: vi.fn(),
     },
   }
 })
@@ -35,7 +37,7 @@ const mockAccountApi = api.accountApi as {
 }
 
 const mockLimitsApi = api.limitsApi as {
-  getByPersonId: ReturnType<typeof vi.fn>
+  getByYear: ReturnType<typeof vi.fn>
 }
 
 function createQueryClient() {
@@ -119,19 +121,25 @@ describe('App', () => {
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
     }
-    mockPersonApi.getAll.mockResolvedValue([mockPerson])
+    mockPersonApi.getAll.mockResolvedValue({
+      content: [mockPerson],
+      totalElements: 1,
+      totalPages: 1,
+      size: 1,
+      number: 0,
+      first: true,
+      last: true,
+      empty: false,
+    })
     mockAccountApi.getByPersonId.mockResolvedValue([])
-    mockLimitsApi.getByPersonId.mockResolvedValue({
+    mockLimitsApi.getByYear.mockResolvedValue({
       year: 2025,
-      traditional401kLimit: 23500,
-      roth401kLimit: 23500,
-      catchUp401kLimit: 7500,
-      traditionalIraLimit: 7000,
-      rothIraLimit: 7000,
-      catchUpIraLimit: 1000,
-      hsaIndividualLimit: 4300,
-      hsaFamilyLimit: 8550,
-      catchUpHsaLimit: 1000,
+      contributionLimits: [
+        { id: '1', year: 2025, accountType: 'TRADITIONAL_401K', limitType: 'BASE', amount: 23500 },
+        { id: '2', year: 2025, accountType: 'TRADITIONAL_IRA', limitType: 'BASE', amount: 7000 },
+        { id: '3', year: 2025, accountType: 'HSA_SELF', limitType: 'BASE', amount: 4300 },
+      ],
+      phaseOutRanges: [],
     })
 
     renderWithRouter('/profile')

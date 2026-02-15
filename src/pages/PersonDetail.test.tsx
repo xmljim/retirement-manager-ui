@@ -21,7 +21,9 @@ vi.mock('../api/client', async () => {
       create: vi.fn(),
     },
     limitsApi: {
-      getByPersonId: vi.fn(),
+      getByYear: vi.fn(),
+      getByYearAndAccountType: vi.fn(),
+      getAvailableYears: vi.fn(),
     },
   }
 })
@@ -39,7 +41,9 @@ const mockAccountApi = api.accountApi as {
 }
 
 const mockLimitsApi = api.limitsApi as {
-  getByPersonId: ReturnType<typeof vi.fn>
+  getByYear: ReturnType<typeof vi.fn>
+  getByYearAndAccountType: ReturnType<typeof vi.fn>
+  getAvailableYears: ReturnType<typeof vi.fn>
 }
 
 function createQueryClient() {
@@ -110,15 +114,37 @@ const mockAccounts = [
 
 const mockLimits = {
   year: 2025,
-  traditional401kLimit: 23500,
-  roth401kLimit: 23500,
-  catchUp401kLimit: 7500,
-  traditionalIraLimit: 7000,
-  rothIraLimit: 7000,
-  catchUpIraLimit: 1000,
-  hsaIndividualLimit: 4300,
-  hsaFamilyLimit: 8550,
-  catchUpHsaLimit: 1000,
+  contributionLimits: [
+    { id: '1', year: 2025, accountType: 'TRADITIONAL_401K', limitType: 'BASE', amount: 23500 },
+    { id: '2', year: 2025, accountType: 'TRADITIONAL_401K', limitType: 'CATCHUP_50', amount: 7500 },
+    { id: '3', year: 2025, accountType: 'TRADITIONAL_IRA', limitType: 'BASE', amount: 7000 },
+    { id: '4', year: 2025, accountType: 'TRADITIONAL_IRA', limitType: 'CATCHUP_50', amount: 1000 },
+    { id: '5', year: 2025, accountType: 'HSA_SELF', limitType: 'BASE', amount: 4300 },
+    { id: '6', year: 2025, accountType: 'HSA_SELF', limitType: 'CATCHUP_55', amount: 1000 },
+  ],
+  phaseOutRanges: [],
+}
+
+const mockPagePerson = {
+  content: [mockPerson],
+  totalElements: 1,
+  totalPages: 1,
+  size: 1,
+  number: 0,
+  first: true,
+  last: true,
+  empty: false,
+}
+
+const mockEmptyPagePerson = {
+  content: [],
+  totalElements: 0,
+  totalPages: 0,
+  size: 1,
+  number: 0,
+  first: true,
+  last: true,
+  empty: true,
 }
 
 describe('PersonDetail', () => {
@@ -153,7 +179,8 @@ describe('PersonDetail', () => {
 
   describe('Empty state', () => {
     it('shows empty state when no profile exists', async () => {
-      mockPersonApi.getAll.mockResolvedValue([])
+      mockPersonApi.getAll.mockResolvedValue(mockEmptyPagePerson)
+      mockLimitsApi.getByYear.mockResolvedValue(mockLimits)
 
       renderPersonDetail()
 
@@ -169,9 +196,9 @@ describe('PersonDetail', () => {
 
   describe('Profile display', () => {
     beforeEach(() => {
-      mockPersonApi.getAll.mockResolvedValue([mockPerson])
+      mockPersonApi.getAll.mockResolvedValue(mockPagePerson)
       mockAccountApi.getByPersonId.mockResolvedValue(mockAccounts)
-      mockLimitsApi.getByPersonId.mockResolvedValue(mockLimits)
+      mockLimitsApi.getByYear.mockResolvedValue(mockLimits)
     })
 
     it('displays person name in header', async () => {
@@ -222,9 +249,9 @@ describe('PersonDetail', () => {
 
   describe('Personal Information card', () => {
     beforeEach(() => {
-      mockPersonApi.getAll.mockResolvedValue([mockPerson])
+      mockPersonApi.getAll.mockResolvedValue(mockPagePerson)
       mockAccountApi.getByPersonId.mockResolvedValue([])
-      mockLimitsApi.getByPersonId.mockResolvedValue(mockLimits)
+      mockLimitsApi.getByYear.mockResolvedValue(mockLimits)
     })
 
     it('displays Personal Information section', async () => {
@@ -260,7 +287,7 @@ describe('PersonDetail', () => {
     })
 
     it('displays Under 50 badge for young person', async () => {
-      mockPersonApi.getAll.mockResolvedValue([mockYoungPerson])
+      mockPersonApi.getAll.mockResolvedValue({ ...mockPagePerson, content: [mockYoungPerson] })
 
       renderPersonDetail()
 
@@ -272,9 +299,9 @@ describe('PersonDetail', () => {
 
   describe('Contribution Room card', () => {
     beforeEach(() => {
-      mockPersonApi.getAll.mockResolvedValue([mockPerson])
+      mockPersonApi.getAll.mockResolvedValue(mockPagePerson)
       mockAccountApi.getByPersonId.mockResolvedValue([])
-      mockLimitsApi.getByPersonId.mockResolvedValue(mockLimits)
+      mockLimitsApi.getByYear.mockResolvedValue(mockLimits)
     })
 
     it('displays Contribution Room section with current year', async () => {
@@ -316,7 +343,7 @@ describe('PersonDetail', () => {
     })
 
     it('displays base limits without catch-up for young person', async () => {
-      mockPersonApi.getAll.mockResolvedValue([mockYoungPerson])
+      mockPersonApi.getAll.mockResolvedValue({ ...mockPagePerson, content: [mockYoungPerson] })
 
       renderPersonDetail()
 
@@ -330,8 +357,8 @@ describe('PersonDetail', () => {
 
   describe('Accounts card', () => {
     beforeEach(() => {
-      mockPersonApi.getAll.mockResolvedValue([mockPerson])
-      mockLimitsApi.getByPersonId.mockResolvedValue(mockLimits)
+      mockPersonApi.getAll.mockResolvedValue(mockPagePerson)
+      mockLimitsApi.getByYear.mockResolvedValue(mockLimits)
     })
 
     it('displays Accounts section', async () => {
@@ -422,9 +449,9 @@ describe('PersonDetail', () => {
 
   describe('Accessibility', () => {
     beforeEach(() => {
-      mockPersonApi.getAll.mockResolvedValue([mockPerson])
+      mockPersonApi.getAll.mockResolvedValue(mockPagePerson)
       mockAccountApi.getByPersonId.mockResolvedValue(mockAccounts)
-      mockLimitsApi.getByPersonId.mockResolvedValue(mockLimits)
+      mockLimitsApi.getByYear.mockResolvedValue(mockLimits)
     })
 
     it('uses semantic heading hierarchy', async () => {

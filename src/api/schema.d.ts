@@ -12,10 +12,17 @@
 export interface paths {
   '/api/v1/persons': {
     get: {
+      parameters: {
+        query?: {
+          page?: number
+          size?: number
+          sort?: string
+        }
+      }
       responses: {
         200: {
           content: {
-            'application/json': components['schemas']['Person'][]
+            'application/json': components['schemas']['PagePerson']
           }
         }
       }
@@ -105,17 +112,66 @@ export interface paths {
       }
     }
   }
-  '/api/v1/persons/{personId}/contribution-limits': {
+  '/api/v1/limits/{year}': {
     get: {
       parameters: {
         path: {
-          personId: string
+          year: number
         }
       }
       responses: {
         200: {
           content: {
-            'application/json': components['schemas']['ContributionLimits']
+            'application/json': components['schemas']['YearlyLimits']
+          }
+        }
+      }
+    }
+  }
+  '/api/v1/limits/{year}/{accountType}': {
+    get: {
+      parameters: {
+        path: {
+          year: number
+          accountType: string
+        }
+      }
+      responses: {
+        200: {
+          content: {
+            'application/json': components['schemas']['AccountTypeLimits']
+          }
+        }
+      }
+    }
+  }
+  '/api/v1/limits/years': {
+    get: {
+      responses: {
+        200: {
+          content: {
+            'application/json': number[]
+          }
+        }
+      }
+    }
+  }
+  '/api/v1/marriages/{id}': {
+    put: {
+      parameters: {
+        path: {
+          id: string
+        }
+      }
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['UpdateMarriageRequest']
+        }
+      }
+      responses: {
+        200: {
+          content: {
+            'application/json': components['schemas']['Marriage']
           }
         }
       }
@@ -213,6 +269,53 @@ export interface components {
       catchUpHsaLimit: number
     }
 
+    PagePerson: {
+      content: components['schemas']['Person'][]
+      totalElements: number
+      totalPages: number
+      size: number
+      number: number
+      first: boolean
+      last: boolean
+      empty: boolean
+    }
+
+    YearlyLimits: {
+      year: number
+      contributionLimits: components['schemas']['ContributionLimit'][]
+      phaseOutRanges: components['schemas']['PhaseOutRange'][]
+    }
+
+    ContributionLimit: {
+      id: string
+      year: number
+      accountType: string
+      limitType: string
+      amount: number
+    }
+
+    PhaseOutRange: {
+      id: string
+      year: number
+      filingStatus: components['schemas']['FilingStatus']
+      accountType: string
+      magiStart: number
+      magiEnd: number
+    }
+
+    AccountTypeLimits: {
+      year: number
+      accountType: string
+      limits: components['schemas']['ContributionLimit'][]
+    }
+
+    UpdateMarriageRequest: {
+      marriageDate: string
+      divorceDate?: string
+      status: components['schemas']['MarriageStatus']
+      notes?: string
+    }
+
     Marriage: {
       id: string
       personId: string
@@ -240,6 +343,7 @@ export interface components {
 export interface operations {}
 
 export type ApiPerson = components['schemas']['Person']
+export type ApiPagePerson = components['schemas']['PagePerson']
 export type ApiAccount = components['schemas']['Account']
 export type ApiIncome = components['schemas']['Income']
 export type ApiMarriage = components['schemas']['Marriage']
@@ -247,4 +351,9 @@ export type ApiMarriageStatus = components['schemas']['MarriageStatus']
 export type ApiCreatePersonRequest = components['schemas']['CreatePersonRequest']
 export type ApiCreateAccountRequest = components['schemas']['CreateAccountRequest']
 export type ApiCreateMarriageRequest = components['schemas']['CreateMarriageRequest']
+export type ApiUpdateMarriageRequest = components['schemas']['UpdateMarriageRequest']
 export type ApiContributionLimits = components['schemas']['ContributionLimits']
+export type ApiYearlyLimits = components['schemas']['YearlyLimits']
+export type ApiAccountTypeLimits = components['schemas']['AccountTypeLimits']
+export type ApiContributionLimit = components['schemas']['ContributionLimit']
+export type ApiPhaseOutRange = components['schemas']['PhaseOutRange']

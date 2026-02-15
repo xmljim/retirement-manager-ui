@@ -151,15 +151,40 @@ describe('API Client', () => {
   })
 
   describe('personApi', () => {
-    it('getAll fetches all persons', async () => {
-      const mockPersons = [{ id: '1', firstName: 'John' }]
+    it('getAll fetches persons with pagination', async () => {
+      const mockPage = {
+        content: [{ id: '1', firstName: 'John' }],
+        totalElements: 1,
+        totalPages: 1,
+        size: 10,
+        number: 0,
+      }
       mockFetch.mockResolvedValueOnce({
         ok: true,
         status: 200,
-        json: () => Promise.resolve(mockPersons),
+        json: () => Promise.resolve(mockPage),
       })
 
-      const result = await personApi.getAll()
+      const result = await personApi.getAll({ page: 0, size: 10 })
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        '/api/v1/persons?page=0&size=10',
+        expect.objectContaining({
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+      expect(result).toEqual(mockPage)
+    })
+
+    it('getAll works without pagination params', async () => {
+      const mockPage = { content: [], totalElements: 0 }
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve(mockPage),
+      })
+
+      await personApi.getAll()
 
       expect(mockFetch).toHaveBeenCalledWith(
         '/api/v1/persons',
@@ -167,7 +192,6 @@ describe('API Client', () => {
           headers: { 'Content-Type': 'application/json' },
         })
       )
-      expect(result).toEqual(mockPersons)
     })
 
     it('getById fetches a single person', async () => {
@@ -263,11 +287,11 @@ describe('API Client', () => {
   })
 
   describe('limitsApi', () => {
-    it('getByPersonId fetches contribution limits', async () => {
+    it('getByYear fetches contribution limits for a year', async () => {
       const mockLimits = {
         year: 2025,
-        traditional401kLimit: 23500,
-        roth401kLimit: 23500,
+        contributionLimits: [],
+        phaseOutRanges: [],
       }
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -275,15 +299,34 @@ describe('API Client', () => {
         json: () => Promise.resolve(mockLimits),
       })
 
-      const result = await limitsApi.getByPersonId('person123')
+      const result = await limitsApi.getByYear(2025)
 
       expect(mockFetch).toHaveBeenCalledWith(
-        '/api/v1/persons/person123/contribution-limits',
+        '/api/v1/limits/2025',
         expect.objectContaining({
           headers: { 'Content-Type': 'application/json' },
         })
       )
       expect(result).toEqual(mockLimits)
+    })
+
+    it('getAvailableYears fetches available years', async () => {
+      const mockYears = [2025, 2024, 2023]
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve(mockYears),
+      })
+
+      const result = await limitsApi.getAvailableYears()
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        '/api/v1/limits/years',
+        expect.objectContaining({
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+      expect(result).toEqual(mockYears)
     })
   })
 
@@ -298,7 +341,7 @@ describe('API Client', () => {
     })
 
     it('generates correct limits query keys', () => {
-      expect(queryKeys.limits.byPerson('123')).toEqual(['limits', 'byPerson', '123'])
+      expect(queryKeys.limits.byYear(2025)).toEqual(['limits', 'byYear', 2025])
     })
   })
 })

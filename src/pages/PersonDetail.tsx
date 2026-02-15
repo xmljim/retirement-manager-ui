@@ -1,7 +1,7 @@
 import { Link } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
 import { personApi, accountApi, limitsApi, queryKeys } from '../api'
-import type { ApiPerson, ApiAccount, ApiContributionLimits } from '../api'
+import type { ApiPerson, ApiAccount, ApiYearlyLimits } from '../api'
 
 /**
  * Format a filing status enum value into a human-readable string
@@ -102,10 +102,25 @@ interface ContributionStat {
 }
 
 /**
+ * Get limit amount by account type and limit type
+ */
+function getLimitAmount(
+  limits: ApiYearlyLimits | undefined,
+  accountType: string,
+  limitType: string
+): number {
+  if (!limits) return 0
+  const limit = limits.contributionLimits.find(
+    l => l.accountType === accountType && l.limitType === limitType
+  )
+  return limit?.amount ?? 0
+}
+
+/**
  * Build contribution stats from limits data
  */
 function buildContributionStats(
-  limits: ApiContributionLimits | undefined,
+  limits: ApiYearlyLimits | undefined,
   isCatchUp: boolean
 ): ContributionStat[] {
   if (!limits) {
@@ -116,17 +131,17 @@ function buildContributionStats(
     ]
   }
 
-  const effective401kLimit = isCatchUp
-    ? limits.traditional401kLimit + limits.catchUp401kLimit
-    : limits.traditional401kLimit
+  const base401k = getLimitAmount(limits, 'TRADITIONAL_401K', 'BASE')
+  const catchUp401k = getLimitAmount(limits, 'TRADITIONAL_401K', 'CATCHUP_50')
+  const effective401kLimit = isCatchUp ? base401k + catchUp401k : base401k
 
-  const effectiveIraLimit = isCatchUp
-    ? limits.traditionalIraLimit + limits.catchUpIraLimit
-    : limits.traditionalIraLimit
+  const baseIra = getLimitAmount(limits, 'TRADITIONAL_IRA', 'BASE')
+  const catchUpIra = getLimitAmount(limits, 'TRADITIONAL_IRA', 'CATCHUP_50')
+  const effectiveIraLimit = isCatchUp ? baseIra + catchUpIra : baseIra
 
-  const effectiveHsaLimit = isCatchUp
-    ? limits.hsaIndividualLimit + limits.catchUpHsaLimit
-    : limits.hsaIndividualLimit
+  const baseHsa = getLimitAmount(limits, 'HSA_SELF', 'BASE')
+  const catchUpHsa = getLimitAmount(limits, 'HSA_SELF', 'CATCHUP_55')
+  const effectiveHsaLimit = isCatchUp ? baseHsa + catchUpHsa : baseHsa
 
   return [
     { value: formatCurrency(effective401kLimit), label: '401(k) Limit' },
@@ -136,18 +151,20 @@ function buildContributionStats(
 }
 
 export function PersonDetail() {
+  const currentYear = new Date().getFullYear()
+
   // Fetch persons list to get the current user's profile
   const {
-    data: persons,
+    data: personsPage,
     isLoading: isLoadingPersons,
     error: personsError,
   } = useQuery({
     queryKey: queryKeys.persons.all,
-    queryFn: personApi.getAll,
+    queryFn: () => personApi.getAll({ page: 0, size: 1 }),
   })
 
   // Use the first person as the current profile
-  const person = persons?.[0]
+  const person = personsPage?.content?.[0]
 
   // Fetch accounts for the person
   const { data: accounts, isLoading: isLoadingAccounts } = useQuery({
@@ -156,11 +173,10 @@ export function PersonDetail() {
     enabled: !!person?.id,
   })
 
-  // Fetch contribution limits for the person
+  // Fetch contribution limits for the current year
   const { data: limits, isLoading: isLoadingLimits } = useQuery({
-    queryKey: queryKeys.limits.byPerson(person?.id ?? ''),
-    queryFn: () => limitsApi.getByPersonId(person!.id),
-    enabled: !!person?.id,
+    queryKey: queryKeys.limits.byYear(currentYear),
+    queryFn: () => limitsApi.getByYear(currentYear),
   })
 
   // Loading state
@@ -213,7 +229,6 @@ export function PersonDetail() {
   const age = calculateAge(person.dateOfBirth)
   const catchUpEligible = isCatchUpEligible(person.dateOfBirth)
   const contributionStats = buildContributionStats(limits, catchUpEligible)
-  const currentYear = new Date().getFullYear()
 
   return (
     <div className="page">

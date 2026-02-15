@@ -7,12 +7,15 @@
 
 import type {
   ApiPerson,
+  ApiPagePerson,
   ApiAccount,
   ApiMarriage,
   ApiCreatePersonRequest,
   ApiCreateAccountRequest,
   ApiCreateMarriageRequest,
-  ApiContributionLimits,
+  ApiUpdateMarriageRequest,
+  ApiYearlyLimits,
+  ApiAccountTypeLimits,
 } from './schema'
 
 // Base configuration
@@ -97,11 +100,27 @@ export const api = {
 // ============================================================================
 
 /**
+ * Pagination parameters
+ */
+export interface PaginationParams {
+  page?: number
+  size?: number
+  sort?: string
+}
+
+/**
  * Person API endpoints
  */
 export const personApi = {
-  /** Get all persons */
-  getAll: () => api.get<ApiPerson[]>('/persons'),
+  /** Get all persons with pagination */
+  getAll: (params?: PaginationParams) => {
+    const searchParams = new URLSearchParams()
+    if (params?.page !== undefined) searchParams.set('page', String(params.page))
+    if (params?.size !== undefined) searchParams.set('size', String(params.size))
+    if (params?.sort) searchParams.set('sort', params.sort)
+    const query = searchParams.toString()
+    return api.get<ApiPagePerson>(`/persons${query ? `?${query}` : ''}`)
+  },
 
   /** Get a person by ID */
   getById: (id: string) => api.get<ApiPerson>(`/persons/${id}`),
@@ -132,26 +151,31 @@ export const marriageApi = {
   /** Get all marriages for a person */
   getByPersonId: (personId: string) => api.get<ApiMarriage[]>(`/persons/${personId}/marriages`),
 
+  /** Get a marriage by ID */
+  getById: (id: string) => api.get<ApiMarriage>(`/marriages/${id}`),
+
   /** Create a new marriage for a person */
   create: (personId: string, data: ApiCreateMarriageRequest) =>
     api.post<ApiMarriage>(`/persons/${personId}/marriages`, data),
 
   /** Update an existing marriage */
-  update: (personId: string, marriageId: string, data: ApiCreateMarriageRequest) =>
-    api.put<ApiMarriage>(`/persons/${personId}/marriages/${marriageId}`, data),
-
-  /** Delete a marriage */
-  delete: (personId: string, marriageId: string) =>
-    api.delete<void>(`/persons/${personId}/marriages/${marriageId}`),
+  update: (id: string, data: ApiUpdateMarriageRequest) =>
+    api.put<ApiMarriage>(`/marriages/${id}`, data),
 }
 
 /**
  * Contribution Limits API endpoints
  */
 export const limitsApi = {
-  /** Get contribution limits for a person */
-  getByPersonId: (personId: string) =>
-    api.get<ApiContributionLimits>(`/persons/${personId}/contribution-limits`),
+  /** Get all limits for a year */
+  getByYear: (year: number) => api.get<ApiYearlyLimits>(`/limits/${year}`),
+
+  /** Get limits for a specific account type and year */
+  getByYearAndAccountType: (year: number, accountType: string) =>
+    api.get<ApiAccountTypeLimits>(`/limits/${year}/${accountType}`),
+
+  /** Get available years */
+  getAvailableYears: () => api.get<number[]>('/limits/years'),
 }
 
 // ============================================================================
@@ -171,7 +195,9 @@ export const queryKeys = {
     byPerson: (personId: string) => ['marriages', 'byPerson', personId] as const,
   },
   limits: {
-    byPerson: (personId: string) => ['limits', 'byPerson', personId] as const,
     byYear: (year: number) => ['limits', 'byYear', year] as const,
+    byYearAndType: (year: number, accountType: string) =>
+      ['limits', 'byYear', year, accountType] as const,
+    availableYears: ['limits', 'years'] as const,
   },
 }

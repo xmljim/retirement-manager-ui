@@ -7,8 +7,11 @@
 
 export { api, personApi, accountApi, marriageApi, limitsApi, queryKeys, ApiError } from './client'
 
+export type { PaginationParams } from './client'
+
 export type {
   ApiPerson,
+  ApiPagePerson,
   ApiAccount,
   ApiIncome,
   ApiMarriage,
@@ -16,5 +19,10 @@ export type {
   ApiCreatePersonRequest,
   ApiCreateAccountRequest,
   ApiCreateMarriageRequest,
+  ApiUpdateMarriageRequest,
   ApiContributionLimits,
+  ApiYearlyLimits,
+  ApiAccountTypeLimits,
+  ApiContributionLimit,
+  ApiPhaseOutRange,
 } from './schema'
