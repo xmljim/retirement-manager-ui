@@ -16,6 +16,16 @@ import type {
   ApiUpdateMarriageRequest,
   ApiYearlyLimits,
   ApiAccountTypeLimits,
+  ApiEmployer,
+  ApiPageEmployer,
+  ApiCreateEmployerRequest,
+  ApiUpdateEmployerRequest,
+  ApiEmployment,
+  ApiCreateEmploymentRequest,
+  ApiUpdateEmploymentRequest,
+  ApiEmploymentIncome,
+  ApiCreateEmploymentIncomeRequest,
+  ApiUpdateEmploymentIncomeRequest,
 } from './schema'
 
 // Base configuration
@@ -180,6 +190,93 @@ export const limitsApi = {
   getAvailableYears: () => api.get<number[]>('/limits/years'),
 }
 
+/**
+ * Employer API endpoints
+ */
+export const employerApi = {
+  /** Get all employers with pagination */
+  getAll: (params?: PaginationParams) => {
+    const searchParams = new URLSearchParams()
+    if (params?.page !== undefined) searchParams.set('page', String(params.page))
+    if (params?.size !== undefined) searchParams.set('size', String(params.size))
+    if (params?.sort) searchParams.set('sort', params.sort)
+    const query = searchParams.toString()
+    return api.get<ApiPageEmployer>(`/employers${query ? `?${query}` : ''}`)
+  },
+
+  /** Get an employer by ID */
+  getById: (id: string) => api.get<ApiEmployer>(`/employers/${id}`),
+
+  /** Search employers by name */
+  searchByName: (name: string) =>
+    api.get<ApiEmployer[]>(`/employers/search?name=${encodeURIComponent(name)}`),
+
+  /** Create a new employer */
+  create: (data: ApiCreateEmployerRequest) => api.post<ApiEmployer>('/employers', data),
+
+  /** Update an existing employer */
+  update: (id: string, data: ApiUpdateEmployerRequest) =>
+    api.put<ApiEmployer>(`/employers/${id}`, data),
+
+  /** Delete an employer */
+  delete: (id: string) => api.delete<void>(`/employers/${id}`),
+}
+
+/**
+ * Employment API endpoints
+ */
+export const employmentApi = {
+  /** Get an employment by ID */
+  getById: (id: string) => api.get<ApiEmployment>(`/employment/${id}`),
+
+  /** Get all employment for a person */
+  getByPersonId: (personId: string) => api.get<ApiEmployment[]>(`/employment?personId=${personId}`),
+
+  /** Get current employment for a person */
+  getCurrentByPersonId: (personId: string) =>
+    api.get<ApiEmployment[]>(`/employment/current?personId=${personId}`),
+
+  /** Create a new employment record */
+  create: (data: ApiCreateEmploymentRequest) => api.post<ApiEmployment>('/employment', data),
+
+  /** Update an existing employment record */
+  update: (id: string, data: ApiUpdateEmploymentRequest) =>
+    api.put<ApiEmployment>(`/employment/${id}`, data),
+
+  /** Delete an employment record */
+  delete: (id: string) => api.delete<void>(`/employment/${id}`),
+}
+
+/**
+ * Employment Income API endpoints
+ */
+export const employmentIncomeApi = {
+  /** Get an income record by ID */
+  getById: (id: string) => api.get<ApiEmploymentIncome>(`/income/${id}`),
+
+  /** Get all income records for an employment */
+  getByEmploymentId: (employmentId: string) =>
+    api.get<ApiEmploymentIncome[]>(`/income/employment/${employmentId}`),
+
+  /** Get all income records for a person */
+  getByPersonId: (personId: string) => api.get<ApiEmploymentIncome[]>(`/income/person/${personId}`),
+
+  /** Get all income records for a person in a specific year */
+  getByPersonIdAndYear: (personId: string, year: number) =>
+    api.get<ApiEmploymentIncome[]>(`/income/person/${personId}/year/${year}`),
+
+  /** Create a new income record */
+  create: (data: ApiCreateEmploymentIncomeRequest) =>
+    api.post<ApiEmploymentIncome>('/income', data),
+
+  /** Update an existing income record */
+  update: (id: string, data: ApiUpdateEmploymentIncomeRequest) =>
+    api.put<ApiEmploymentIncome>(`/income/${id}`, data),
+
+  /** Delete an income record */
+  delete: (id: string) => api.delete<void>(`/income/${id}`),
+}
+
 // ============================================================================
 // TanStack Query Keys
 // Consistent query key factory for cache management
@@ -201,5 +298,22 @@ export const queryKeys = {
     byYearAndType: (year: number, accountType: string) =>
       ['limits', 'byYear', year, accountType] as const,
     availableYears: ['limits', 'years'] as const,
+  },
+  employers: {
+    all: ['employers'] as const,
+    detail: (id: string) => ['employers', id] as const,
+    search: (name: string) => ['employers', 'search', name] as const,
+  },
+  employment: {
+    detail: (id: string) => ['employment', id] as const,
+    byPerson: (personId: string) => ['employment', 'byPerson', personId] as const,
+    currentByPerson: (personId: string) => ['employment', 'current', 'byPerson', personId] as const,
+  },
+  employmentIncome: {
+    detail: (id: string) => ['income', id] as const,
+    byEmployment: (employmentId: string) => ['income', 'byEmployment', employmentId] as const,
+    byPerson: (personId: string) => ['income', 'byPerson', personId] as const,
+    byPersonAndYear: (personId: string, year: number) =>
+      ['income', 'byPerson', personId, 'year', year] as const,
   },
 }

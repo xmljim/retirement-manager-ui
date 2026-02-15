@@ -193,6 +193,8 @@ export interface components {
 
     MarriageStatus: 'MARRIED' | 'DIVORCED' | 'WIDOWED' | 'ANNULLED'
 
+    EmploymentType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'SELF_EMPLOYED'
+
     AccountType:
       | 'TRADITIONAL_401K'
       | 'ROTH_401K'
@@ -335,6 +337,113 @@ export interface components {
       endDate?: string
       status: components['schemas']['MarriageStatus']
     }
+
+    Employer: {
+      id: string
+      name: string
+      ein?: string
+      addressLine1?: string
+      addressLine2?: string
+      city?: string
+      state?: string
+      zipCode?: string
+      createdAt: string
+      updatedAt: string
+    }
+
+    CreateEmployerRequest: {
+      name: string
+      ein?: string
+      addressLine1?: string
+      addressLine2?: string
+      city?: string
+      state?: string
+      zipCode?: string
+    }
+
+    UpdateEmployerRequest: {
+      name: string
+      ein?: string
+      addressLine1?: string
+      addressLine2?: string
+      city?: string
+      state?: string
+      zipCode?: string
+    }
+
+    PageEmployer: {
+      content: components['schemas']['Employer'][]
+      totalElements: number
+      totalPages: number
+      size: number
+      number: number
+      first: boolean
+      last: boolean
+      empty: boolean
+    }
+
+    Employment: {
+      id: string
+      personId: string
+      employerId: string
+      employerName: string
+      jobTitle?: string
+      startDate: string
+      endDate?: string
+      employmentType: components['schemas']['EmploymentType']
+      retirementPlanEligible: boolean
+      current: boolean
+      createdAt: string
+      updatedAt: string
+    }
+
+    CreateEmploymentRequest: {
+      personId: string
+      employerId: string
+      jobTitle?: string
+      startDate: string
+      endDate?: string
+      employmentType: components['schemas']['EmploymentType']
+      retirementPlanEligible?: boolean
+    }
+
+    UpdateEmploymentRequest: {
+      employerId: string
+      jobTitle?: string
+      startDate: string
+      endDate?: string
+      employmentType: components['schemas']['EmploymentType']
+      retirementPlanEligible: boolean
+    }
+
+    EmploymentIncome: {
+      id: string
+      employmentId: string
+      year: number
+      annualSalary: number
+      bonus: number
+      otherCompensation: number
+      w2Wages?: number
+      totalCompensation: number
+      createdAt: string
+      updatedAt: string
+    }
+
+    CreateEmploymentIncomeRequest: {
+      employmentId: string
+      year: number
+      annualSalary: number
+      bonus?: number
+      otherCompensation?: number
+      w2Wages?: number
+    }
+
+    UpdateEmploymentIncomeRequest: {
+      annualSalary: number
+      bonus: number
+      otherCompensation: number
+      w2Wages?: number
+    }
   }
 }
 
@@ -357,3 +466,18 @@ export type ApiYearlyLimits = components['schemas']['YearlyLimits']
 export type ApiAccountTypeLimits = components['schemas']['AccountTypeLimits']
 export type ApiContributionLimit = components['schemas']['ContributionLimit']
 export type ApiPhaseOutRange = components['schemas']['PhaseOutRange']
+
+// M2: Employment & Income types
+export type ApiEmployer = components['schemas']['Employer']
+export type ApiPageEmployer = components['schemas']['PageEmployer']
+export type ApiCreateEmployerRequest = components['schemas']['CreateEmployerRequest']
+export type ApiUpdateEmployerRequest = components['schemas']['UpdateEmployerRequest']
+export type ApiEmployment = components['schemas']['Employment']
+export type ApiEmploymentType = components['schemas']['EmploymentType']
+export type ApiCreateEmploymentRequest = components['schemas']['CreateEmploymentRequest']
+export type ApiUpdateEmploymentRequest = components['schemas']['UpdateEmploymentRequest']
+export type ApiEmploymentIncome = components['schemas']['EmploymentIncome']
+export type ApiCreateEmploymentIncomeRequest =
+  components['schemas']['CreateEmploymentIncomeRequest']
+export type ApiUpdateEmploymentIncomeRequest =
+  components['schemas']['UpdateEmploymentIncomeRequest']
