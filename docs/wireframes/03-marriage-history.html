@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarriageHistory - Wireframe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-display: 'Fraunces', serif;
+      --font-body: 'DM Sans', sans-serif;
+      --stone-50: #fafaf9; --stone-100: #f5f5f4; --stone-200: #e7e5e4;
+      --stone-300: #d6d3d1; --stone-500: #78716c; --stone-700: #44403c; --stone-900: #1c1917;
+      --teal-500: #14b8a6; --teal-600: #0d9488;
+      --emerald-500: #10b981; --amber-500: #f59e0b; --rose-500: #f43f5e;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-body); background: var(--stone-100); min-height: 100vh; padding: 32px; }
+
+    .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); max-width: 700px; margin: 0 auto; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .card-title { font-family: var(--font-display); font-size: 1.25rem; }
+    .btn { padding: 10px 16px; border-radius: 8px; font-weight: 500; font-size: 0.875rem; border: none; cursor: pointer; }
+    .btn-primary { background: var(--teal-600); color: white; }
+
+    .info-box { background: var(--stone-50); border-radius: 10px; padding: 16px; margin-bottom: 24px; display: flex; gap: 12px; }
+    .info-icon { font-size: 1.25rem; }
+    .info-text { font-size: 0.9rem; color: var(--stone-700); line-height: 1.5; }
+
+    .marriage-item { border: 1px solid var(--stone-200); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .marriage-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .marriage-spouse { font-weight: 600; font-size: 1.1rem; }
+    .marriage-dates { font-size: 0.9rem; color: var(--stone-500); margin-top: 4px; }
+
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .badge-green { background: rgba(16,185,129,0.1); color: var(--emerald-500); }
+    .badge-amber { background: rgba(245,158,11,0.1); color: var(--amber-500); }
+    .badge-gray { background: var(--stone-100); color: var(--stone-500); }
+
+    .marriage-meta { display: flex; gap: 24px; font-size: 0.875rem; color: var(--stone-500); }
+    .meta-item { display: flex; align-items: center; gap: 6px; }
+
+    .duration-bar { height: 6px; background: var(--stone-200); border-radius: 3px; margin-top: 16px; overflow: hidden; }
+    .duration-fill { height: 100%; border-radius: 3px; }
+    .duration-fill.eligible { background: var(--emerald-500); }
+    .duration-fill.partial { background: var(--amber-500); }
+    .duration-label { font-size: 0.75rem; color: var(--stone-500); margin-top: 6px; display: flex; justify-content: space-between; }
+
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--stone-500); }
+    .empty-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.5; }
+    .empty-text { margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Marriage History</h2>
+      <button class="btn btn-primary">+ Add Marriage</button>
+    </div>
+
+    <div class="info-box">
+      <span class="info-icon">i</span>
+      <p class="info-text">
+        <strong>Why track this?</strong> Social Security spousal benefits require marriages of 10+ years for divorced spouse benefits. We track this to help calculate your potential benefits.
+      </p>
+    </div>
+
+    <div class="marriage-item">
+      <div class="marriage-header">
+        <div>
+          <div class="marriage-spouse">Sarah Johnson</div>
+          <div class="marriage-dates">Jun 2010 - Present</div>
+        </div>
+        <span class="badge badge-green">Married</span>
+      </div>
+      <div class="marriage-meta">
+        <div class="meta-item">14 years, 8 months</div>
+        <div class="meta-item"><span class="badge badge-green">SS Eligible</span></div>
+      </div>
+      <div class="duration-bar">
+        <div class="duration-fill eligible" style="width: 100%"></div>
+      </div>
+      <div class="duration-label">
+        <span>0 years</span>
+        <span>10 year threshold</span>
+        <span>Current</span>
+      </div>
+    </div>
+
+    <div class="marriage-item">
+      <div class="marriage-header">
+        <div>
+          <div class="marriage-spouse">Emily Davis</div>
+          <div class="marriage-dates">Mar 2002 - Dec 2008</div>
+        </div>
+        <span class="badge badge-amber">Divorced</span>
+      </div>
+      <div class="marriage-meta">
+        <div class="meta-item">6 years, 9 months</div>
+        <div class="meta-item"><span class="badge badge-gray">Not SS Eligible</span></div>
+      </div>
+      <div class="duration-bar">
+        <div class="duration-fill partial" style="width: 67%"></div>
+      </div>
+      <div class="duration-label">
+        <span>0 years</span>
+        <span>10 year threshold</span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -16,7 +16,7 @@
     "preview": "vite preview",
     "quality": "npm run lint && npm run format:check && npm run test:coverage",
     "quality:fix": "npm run lint:fix && npm run format && npm run test:coverage",
-    "api:generate": "openapi-typescript http://localhost:8080/api-docs -o src/api/schema.d.ts",
+    "api:generate": "openapi-typescript http://localhost:8080/v3/api-docs -o src/api/schema.d.ts",
     "api:generate:file": "openapi-typescript openapi.json -o src/api/schema.d.ts"
   },
   "dependencies": {
@@ -31,6 +31,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
